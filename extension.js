@@ -10,21 +10,26 @@ function _showInterfaceInformation() {
 
     button.menu.removeAll();
 
-    let cmd = 'ifconfig';
-    let [_, out] = GLib.spawn_command_line_sync(cmd);
+    let [_, out] = GLib.spawn_command_line_sync('ifconfig');
 
     out = out.toString();
 
     let lines = out.split('\n');
 
     for (i=0; i < lines.length; i++) {
-        let intfname = lines[i].split(' ')[0];
-        if (intfname.length) {
-            let ipaddr = lines[i+1].match(/\d+.\d+.\d+.\d+/g);
+        let intf_name = lines[i].split(' ')[0];
+        if (intf_name.length) {
+            let ipv4_addr = lines[i + 1].match(/\d+.\d+.\d+.\d+/g);
+            let ipv6_addr = lines[i + 2];
+            ipv6_addr = ipv6_addr.split("");
 
-            let menuname = intfname + " : " + ipaddr;
+            let menu_name = intf_name + "\n\tIPv4: " + ipv4_addr[0];
 
-            let item = new PopupMenu.PopupSwitchMenuItem(menuname, true);
+            if (ipv6_addr[2] == 'inet6') {
+                menu_name += "\n\tIPv6: " + ipv6_addr[3];
+            }
+
+            let item = new PopupMenu.PopupSwitchMenuItem(menu_name, true);
             button.menu.addMenuItem(item);
         }
     }
