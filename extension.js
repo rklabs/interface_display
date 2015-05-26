@@ -20,14 +20,19 @@ function _showInterfaceInformation() {
         let intf_name = lines[i].split(' ')[0];
         if (intf_name.length) {
             let ipv4_addr = lines[i + 1].match(/\d+.\d+.\d+.\d+/g);
-            let ipv6_addr = lines[i + 2];
-            ipv6_addr = ipv6_addr.split("");
+            let ipv6_line = lines[i + 2];
+            ipv6_line = ipv6_line.split(' ');
 
-            let menu_name = intf_name + "\n\tIPv4: " + ipv4_addr[0];
-
-            if (ipv6_addr[2] == 'inet6') {
-                menu_name += "\n\tIPv6: " + ipv6_addr[3];
+            for (j=0; j < ipv6_line.length; j++) {
+                if (ipv6_line[j] == 'inet6') {
+                    ipv6_addr = ipv6_line[j + 2];
+                    break;
+                }
             }
+
+            let ipv4_menu = "\n\tIPv4: " + ipv4_addr[0];
+            let ipv6_menu = "\n\tIPv6: " + ipv6_addr;
+            let menu_name = intf_name + ipv4_menu + ipv6_menu;
 
             let item = new PopupMenu.PopupSwitchMenuItem(menu_name, true);
             button.menu.addMenuItem(item);
