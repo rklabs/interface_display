@@ -23,6 +23,7 @@ function _showInterfaceInformation() {
             let ipv6_line = lines[i + 2];
             ipv6_line = ipv6_line.split(' ');
 
+            // Find if interface has ipv6 address
             for (j=0; j < ipv6_line.length; j++) {
                 if (ipv6_line[j] == 'inet6') {
                     ipv6_addr = ipv6_line[j + 2];
@@ -31,8 +32,15 @@ function _showInterfaceInformation() {
             }
 
             let ipv4_menu = "\n\tIPv4: " + ipv4_addr[0];
-            let ipv6_menu = "\n\tIPv6: " + ipv6_addr;
-            let menu_name = intf_name + ipv4_menu + ipv6_menu;
+            let menu_name = intf_name;
+
+            // If ipv6 address exists add to menu 
+            if (ipv6_addr.length) {
+                let ipv6_menu = "\n\tIPv6: " + ipv6_addr;
+                menu_name += ipv4_menu + ipv6_menu;
+            } else {
+                menu_name += ipv4_menu;
+            }
 
             let item = new PopupMenu.PopupSwitchMenuItem(menu_name, true);
             button.menu.addMenuItem(item);
